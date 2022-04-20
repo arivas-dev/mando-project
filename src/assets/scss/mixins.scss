@@ -1,0 +1,29 @@
+@import './variables.scss';
+
+@font-face {
+  src: url('../fonts/Montserrat.ttf');
+  font-family: Monserrat;
+}
+
+@font-face {
+  src: url('../fonts/Roboto.ttf');
+  font-family: Roboto;
+}
+
+@mixin small {
+  @media (max-width: $small) {
+    @content;
+  }
+}
+
+@mixin medium {
+  @media (max-width: $medium) {
+    @content;
+  }
+}
+
+@mixin large {
+  @media (max-width: $large) {
+    @content;
+  }
+}
