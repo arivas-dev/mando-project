@@ -1,0 +1,2 @@
+(this.webpackJsonpweb=this.webpackJsonpweb||[]).push([[8],{412:function(t,n,e){},852:function(t,n,e){"use strict";e.r(n);var s=e(4),c=(e(0),e.p+"static/media/notFound.4861ae77.svg");e(412),n.default=function(){return Object(s.jsxs)("div",{className:"not-found",children:[Object(s.jsx)("img",{src:c,alt:"Not found"}),Object(s.jsx)("h3",{children:"Resource not found."})]})}}}]);
+//# sourceMappingURL=8.12bc5c72.chunk.js.map
