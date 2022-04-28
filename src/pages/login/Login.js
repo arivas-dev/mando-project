@@ -1,4 +1,4 @@
-// import { login } from 'store/actions/userActions';
+import { login } from 'store/actions/userActions';
 import { messages } from 'constants/messages';
 // import security from 'assets/img/login/security.svg'
 import security from 'assets/img/login/logo.jpeg';
@@ -18,26 +18,26 @@ const Login = () => {
     const dispatch = useDispatch();
     useMessenger(loginNode, messages.auth.login);
 
-    const { login } = useAuth()
+    // const { login } = useAuth()
 
-    // const handleSubmit = () => {
-    //     dispatch(login({ email, password }));
-    // };
+    const handleSubmit = () => {
+        dispatch(login({ email, password }));
+    };
 
 
 
-    const handleSubmit = async () => {
-        try {
-            await login(email, password)
-            // history.push("/")
-            alert('Logueado')
-        } catch(err) {
-            console.log("handleSubmit  -  err", err);
-            alert("Failed to log in"+err)
-        }
+    // const handleSubmit = async () => {
+    //     try {
+    //         await login(email, password)
+    //         // history.push("/")
+    //         alert('Logueado')
+    //     } catch(err) {
+    //         console.log("handleSubmit  -  err", err);
+    //         alert("Failed to log in"+err)
+    //     }
 
-        // setLoading(false)s
-    }
+    //     // setLoading(false)s
+    // }
 
 
 

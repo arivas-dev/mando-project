@@ -1,5 +1,5 @@
 
-const baseUrl = 'https://warm-escarpment-23462.herokuapp.com/api/v1';
+const baseUrl = 'http://127.0.0.1:8000/api/v1';
 export const endpoints = {
   auth: {
     login: `${baseUrl}/login`,
