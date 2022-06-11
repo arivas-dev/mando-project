@@ -1,44 +1,28 @@
-import { login } from 'store/actions/userActions';
 import { messages } from 'constants/messages';
-// import security from 'assets/img/login/security.svg'
 import security from 'assets/img/login/logo.jpeg';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import React, { useState, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useMessenger } from 'hooks/useMessenger';
 import './Login.scss';
-import { useAuth } from "contexts/AuthContext"
+
+import { AppContext } from 'context/app'
+import { LocalStorageHandler } from 'utils/LocalStorageHandler'
+import { useContext } from 'react'
+import { Form, Spin, Button, Input, message } from 'antd'
+import { AppRoutes } from 'constants/app.routes';
 
 const Login = () => {
     const btnRef = useRef();
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('');
-    const loginNode = useSelector(s => s.user.login);
-    const { isLoading, data } = loginNode;
-    const dispatch = useDispatch();
-    useMessenger(loginNode, messages.auth.login);
 
-    // const { login } = useAuth()
-
-    const handleSubmit = () => {
-        dispatch(login({ email, password }));
-    };
+    const { login, user, setRole } = useContext(AppContext)
+    
+    const form = Form.useForm()[0]
 
 
-
-    // const handleSubmit = async () => {
-    //     try {
-    //         await login(email, password)
-    //         // history.push("/")
-    //         alert('Logueado')
-    //     } catch(err) {
-    //         console.log("handleSubmit  -  err", err);
-    //         alert("Failed to log in"+err)
-    //     }
-
-    //     // setLoading(false)s
-    // }
-
+    const handleFormSubmit = (data) => {
+        login(data.email, data.password).then((r) => {
+            if (typeof r === 'string') return message.error(r)
+        })
+    }
 
 
     const handleKey = evt => {
@@ -47,53 +31,80 @@ const Login = () => {
         }
     }
 
-    if (data) {
-        return <Redirect to="/dashboard" />
+    if (LocalStorageHandler.token) {
+        return (
+            <Navigate
+                to={
+                    user.data.role === 'user'
+                        ? `/${AppRoutes.user_routes.base}`
+                        : `/${AppRoutes.admin_routes.base}`
+                }
+            />
+        )
     }
+
 
     return (
         <>
             <span className="login-bg" />
             <div className="login">
                 <img src={security} className="logo" />
-                <div className="login-inputs">
-                    {/* <h2 className="login-title">LOGIN</h2> */}
-                    <div className="login-input-group">
-                        {/* <label>email:</label> */}
-                        <input
-                            className="input"
-                            type="text"
-                            placeholder="Input your email"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="login-input-group">
-                        {/* <label>password:</label> */}
-                        <input
-                            className="input"
-                            type="password"
-                            placeholder="Input your password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            onKeyDown={handleKey}
-                        />
-                    </div>
-                    <h4 className="login-forgot">Forgot password? Click <a href="!#">here</a></h4>
-                    <div className="login-buttons">
-                        <button
-                            ref={btnRef}
-                            disabled={!(email && password) || isLoading}
-                            className={`button is-dark ${isLoading ? 'is-loading' : ''}`}
-                            onClick={handleSubmit}
+                <Form
+                    className="login-page-form"
+                    form={form}
+                    onFinish={handleFormSubmit}
+                    layout="vertical"
+                    // initialValues={{email: 'user@gmail.com',password : 'Inicio123'}}
+                    style={{ width: '100%' }}
+                >
+
+                    <Spin tip="Loading..." spinning={user.isLoading} >
+
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: 'Please input your email.' }]}
                         >
-                            LOGIN
-                        </button>
-                        {/* <Link className="button is-info" to="/register">
-                            REGISTER
-                        </Link> */}
-                    </div>
-                </div>
+                            <Input
+                                placeholder="Email"
+                                type="email"
+                                className="login-page-email"
+                            />
+                        </Form.Item>
+
+
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[
+                                { required: true, message: 'Please input your password.' },
+                                {
+                                    min: 8,
+                                    message: 'Your passsword should have 8 chars at least',
+                                },
+                                {
+                                    max: 30,
+                                    message: 'Your passsword should not exceeed 30 chars.',
+                                },
+                            ]}
+                        >
+                            <Input.Password
+                                placeholder="Password"
+                                className="login-page-password"
+                            />
+                        </Form.Item>
+
+                        <div className="login-page-buttons">
+                            <Button htmlType="reset">Cancel</Button>
+                            <Button type="primary" htmlType="submit">
+                                Login
+                            </Button>
+                        </div>
+
+                    </Spin>
+
+                </Form>
+
             </div>
         </>
     )

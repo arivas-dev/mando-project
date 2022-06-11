@@ -1,14 +1,17 @@
-import React from 'react';
-import NotFoundImg from 'assets/img/notFound.svg';
-import './NotFound.scss';
+import { Result, Button } from 'antd'
+import { Link } from 'react-router-dom'
 
-const NotFound = () => {
-  return (
-    <div className="not-found">
-        <img src={NotFoundImg} alt="Not found" />
-        <h3>Resource not found.</h3>
-    </div>
-  );
-};
+const NotFound = () => (
+  <Result
+    status="404"
+    title="404"
+    subTitle="Sorry, the page you visited does not exist."
+    extra={
+      <Button type="primary">
+        <Link to="/">Back home</Link>
+      </Button>
+    }
+  />
+)
 
-export default NotFound;
+export default NotFound

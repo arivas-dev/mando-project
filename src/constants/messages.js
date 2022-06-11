@@ -16,5 +16,9 @@ export const messages = {
   "products": {
     "created": "Product created successfully",
     "updated": "Product updated successfully",
+  },
+  "login": {
+    "auth/wrong-password" : "Password is incorrect",
+    "auth/user-not-found" : "User not found",
   }
 };

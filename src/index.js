@@ -4,13 +4,13 @@ import './index.css';
 import 'antd/dist/antd.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import 'antd/dist/antd.compact.min.css'
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  // </React.StrictMode>
+  ,  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

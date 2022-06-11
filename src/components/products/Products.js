@@ -10,6 +10,28 @@ import { Popconfirm } from '../../../node_modules/antd/lib/index';
 
 
 
+import security from 'assets/img/login/logo.jpeg';
+
+import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button } from 'antd'
+
+import 'antd/dist/antd.css';
+
+import moment from 'moment';
+// import security from '../assets/logo.jpeg';
+
+
+
+
+
+const { Item } = Form;
+const { Option } = Select;
+
+
+
+function onChange(time, timeString) {
+    console.log(time, timeString);
+}
+
 
 export const Products = () => {
     //Local state
@@ -113,7 +135,7 @@ export const Products = () => {
         setModalOpen(false);
     }
 
-    const handleDelete = async() => {
+    const handleDelete = async () => {
         await dispatch(deleteProduct({ id: selected.id }));
         setSelected({});
     }
@@ -124,7 +146,7 @@ export const Products = () => {
 
     return (
         <div className="users">
-            <div className="users-actions">
+            {/* <div className="users-actions">
                 <button
                     onClick={handleNew}
                     className="button is-dark"
@@ -185,7 +207,94 @@ export const Products = () => {
                 onSave={onSave}
                 onUpdate={onUpdate}
                 product={selected}
-            />
+            /> */}
+            <br />
+            <br />
+            <Row>
+                <Col xs={1} sm={2} md={6} lg={7}></Col>
+
+                <Col xs={22} sm={20} md={12} lg={10} >
+
+                    <Form>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <img width="325px" height="150px" src={security} />
+                        </div>
+                        <br />
+                        <br />
+                        <br />
+
+                        <Item label="STATION">
+                            <Select
+                                showSearch
+                                placeholder="STATION"
+
+                            >
+                                <Option value="SAL">SAL</Option>
+                                <Option value="GUA">GUA</Option>
+                                <Option value="SAP">SAP</Option>
+                            </Select>
+                        </Item>
+
+
+
+                        <Item label="Nombre">
+                            <Input />
+                        </Item>
+
+
+
+                        <Item label="Fecha">
+                            <DatePicker />
+                        </Item>
+                        <Item label="¿La fecha reportada como laborada, es en su día libre?" >
+                            <Radio.Group  >
+                                <Radio value={1}>SI</Radio>
+                                <Radio value={2}>NO</Radio>
+
+                            </Radio.Group>
+                        </Item>
+                        <Item label="Hora de Entrada" >
+                            <TimePicker onChange={onChange} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                        </Item>
+
+                        <Item label="Hora de Salida" >
+                            <TimePicker onChange={onChange} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                        </Item>
+                        <Item label="Justificación de horas extra realizadas o día libre laborado">
+                            <Input />
+                        </Item>
+                        <Item label="¿Cuantas horas extra realizo?" >
+                            <Radio.Group  >
+                                <Radio value={1}>1</Radio>
+                                <Radio value={2}>2</Radio>
+                                <Radio value={3}>3</Radio>
+                                <Radio value={4}>4</Radio>
+                                <Radio value={5}>5</Radio>
+                                <Radio value={6}>6</Radio>
+                                <Radio value={7}>7</Radio>
+                                <Radio value={8}>8</Radio>
+                                <Radio value={9}>9</Radio>
+                                <Radio value={10}>10</Radio>
+
+                            </Radio.Group>
+                        </Item>
+                    </Form>
+                </Col>
+                <Col xs={1} sm={2} md={6} lg={7}></Col>
+            </Row>
+
+            <Row>
+                <Col span={12} offset={6}>
+                    <Button type="primary" block>
+                        Submit
+                    </Button>
+                </Col>
+            </Row>
+
+            {/* <Row>
+                <Col xs={22} sm={20} md={12} lg={10} >
+                </Col>
+            </Row> */}
         </div>
     );
 };

@@ -33,8 +33,11 @@ const Dashboard = () => {
           <li>
             <Link to={`${url}/users`}>USERS</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to={`${url}/products`}>PRODUCTS</Link>
+          </li> */}
+          <li>
+            <Link to={`${url}/products`}>HOURS</Link>
           </li>
           <li onClick={handleLogout}>
             LOGOUT
