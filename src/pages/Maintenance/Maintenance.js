@@ -5,8 +5,8 @@ import security from 'assets/img/login/logo.jpeg';
 import moment from 'moment'
 import { getFirestore, doc, collection, setDoc, addDoc, db } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { firebaseApp,storage } from "firebase";
-import { ref, uploadBytesResumable, uploadBytes,getDownloadURL } from "firebase/storage";
+import { firebaseApp, storage } from "firebase";
+import { ref, uploadBytesResumable, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
 
@@ -33,8 +33,8 @@ const Maintenance = () => {
             'arrival': fieldsValue['arrival'].format('HH:mm:ss'),
             'depature': fieldsValue['depature'].format('HH:mm:ss'),
             'time_delivered': fieldsValue['time_delivered'].format('HH:mm:ss'),
-            'if_rotable_part' : null,
-            'logbook_scan' : null,
+            'if_rotable_part': null,
+            'logbook_scan': null,
         };
 
 
@@ -62,10 +62,10 @@ const Maintenance = () => {
 
         // })
 
-        
+
         try {
-         
-          
+
+
 
             const docRef = await addDoc(collection(firestore, "maintenance"), { ...values });
             form.resetFields()
@@ -131,7 +131,7 @@ const Maintenance = () => {
                         <br />
                         <br />
                         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                            <img style={{ height: '128px', objectFit: 'cover', objectPosition: '50% 50%', width: '730px' }} src={security} />
+                            <img style={{ objectFit: 'cover', objectPosition: '50% 50%', width: '100%', height: 'auto' }} src={security} />
                         </div>
                         <br />
                         <br />
@@ -235,7 +235,7 @@ const Maintenance = () => {
 
 
 
-                        <Form.Item  label="If Rotable Part. Scan Part Tag" name="if_rotable_part">
+                        <Form.Item label="If Rotable Part. Scan Part Tag" name="if_rotable_part">
                             <Form.Item name="if_rotable_part" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
                                 <Upload.Dragger name="files" {...fileProps}  >
                                     <p className="ant-upload-drag-icon">
@@ -265,7 +265,7 @@ const Maintenance = () => {
                         </Form.Item>
 
 
-                        <Form.Item  rules={rules} label="Depature" name="depature">
+                        <Form.Item rules={rules} label="Depature" name="depature">
                             <TimePicker defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                         </Form.Item>
 
@@ -305,7 +305,7 @@ const Maintenance = () => {
 
 
 
-                        <Form.Item  label="Logbook scan" >
+                        <Form.Item label="Logbook scan" >
                             <Form.Item name="logbook_scan" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
                                 <Upload.Dragger name="files" {...fileProps}  >
                                     <p className="ant-upload-drag-icon">

@@ -55,7 +55,7 @@ const Hours = () => {
             <br />
             <br />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <img style={{height : '128px',objectFit : 'cover',objectPosition : '50% 50%',width : '730px'}} src={security} />
+              <img style={{objectFit : 'cover',objectPosition : '50% 50%',width : '100%',height : 'auto'}} src={security} />
             </div>
             <br />
             <br />
