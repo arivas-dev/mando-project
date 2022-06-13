@@ -20,7 +20,7 @@ const HourResults = () => {
     const getAll = async () => {
         const docuCifrada = await getDocs(collection(firestore, `hours`));
         const year = new Date().getFullYear()
-        const documentos = docuCifrada.docs.map((doc,index) => ({...doc.data(),id: `${year}-00${index+1}`}));
+        const documentos = docuCifrada.docs.reverse().map((doc,index) => ({...doc.data(),id: `${year}-00${index+1}`})).reverse();
         setData(documentos)
 
     }
