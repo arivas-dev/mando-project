@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table,Typography } from 'antd'
 import {firebaseApp} from "firebase";
 import { getFirestore, doc, collection,getDocs,} from "firebase/firestore";
-const fields = ['ac_fleet','ac_registration','airline','arrival','costumber_responsible','costumer_work_order','date','depature','flight_number','job_description','service','station']
+const fields = ['id','ac_fleet','ac_registration','airline','arrival','costumber_responsible','costumer_work_order','date','depature','flight_number','job_description','service','station']
 
 
 
@@ -22,9 +22,8 @@ const MaintenanceResults = () => {
     const getAll = async () => {
         const docuCifrada = await getDocs(collection(firestore, `maintenance`));
       
-        const documentos = docuCifrada.docs.map(doc => doc.data());
+        const documentos = docuCifrada.docs.map(doc => ({...doc.data(),id: doc.id}));
         setData(documentos)
-
     }
     return (
         <div className="books-page">
