@@ -21,8 +21,8 @@ const MaintenanceResults = () => {
 
     const getAll = async () => {
         const docuCifrada = await getDocs(collection(firestore, `maintenance`));
-      
-        const documentos = docuCifrada.docs.map(doc => ({...doc.data(),id: doc.id}));
+        const year = new Date().getFullYear()
+        const documentos = docuCifrada.docs.map((doc,index) => ({...doc.data(),id: `${year}-00${index+1}`}));
         setData(documentos)
     }
     return (
