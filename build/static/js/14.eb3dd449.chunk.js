@@ -1,0 +1,2 @@
+(this.webpackJsonpweb=this.webpackJsonpweb||[]).push([[14],{404:function(t,e,s){"use strict";s.r(e);var i=s(13),r=s(413),a=s(245),c=s(50);e.default=function(){return Object(i.jsx)(r.a,{status:"404",title:"404",subTitle:"Sorry, the page you visited does not exist.",extra:Object(i.jsx)(a.a,{type:"primary",children:Object(i.jsx)(c.b,{to:"/",children:"Back home"})})})}}}]);
+//# sourceMappingURL=14.eb3dd449.chunk.js.map

@@ -1,3 +1,4 @@
+import React,{useState} from 'react'
 import { AppContext } from 'context/app'
 import { useContext } from 'react'
 import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button, message, Upload } from 'antd'
@@ -21,51 +22,71 @@ const Maintenance = () => {
     const { user } = useContext(AppContext)
     const [form] = Form.useForm();
     const uid = LocalStorageHandler.user.uid
-
+    const [loading, setLoading] = useState(false)
     const rules = [{ required: true, message: 'Field is required' }];
 
 
     const save = async (fieldsValue) => {
-
+        setLoading(true)
         const values = {
             ...fieldsValue,
             'date': fieldsValue['date'].format('YYYY-MM-DD'),
             'arrival': fieldsValue['arrival'].format('HH:mm:ss'),
             'depature': fieldsValue['depature'].format('HH:mm:ss'),
             'time_delivered': fieldsValue['time_delivered'].format('HH:mm:ss'),
-            'if_rotable_part': null,
-            'logbook_scan': null,
+            // 'if_rotable_part': null,
+            // 'logbook_scan': null,
         };
-
-
-        console.log("save  -  fieldsValue", values);
-
-        let images_url = ''
-        const storage = getStorage();
-
-        // values.if_rotable_part.map(async file => {
-
-        //     const imageRef = ref(storage, 'images/' + file.name);
-        //     uploadBytes(imageRef, file)
-        //         .then((snapshot) => {
-        //             console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-        //             console.log('File metadata:', snapshot.metadata);
-        //             // Let's get a download URL for the file.
-        //             getDownloadURL(snapshot.ref).then((url) => {
-        //                 console.log('File available at', url);
-        //                 // ...
-        //             });
-        //         }).catch((error) => {
-        //             console.error('Upload failed', error);
-        //             // ...
-        //         });
-
-        // })
-
 
         try {
 
 
+            let promises = []
+            if(values.if_rotable_part){
+                values.if_rotable_part.map(file => {
+                    const storage = getStorage();
+                    const storageRef = ref(storage, 'if_rotable_part/' + file.name);
+                    // 'file' comes from the Blob or File API
+                    promises.push(uploadBytes(storageRef, file.originFileObj).then((snapshot) => getDownloadURL(storageRef)))
+                })
+            }
+    
+            let url_if_rotable_part = ""
+            if(promises.length){
+                await Promise.all(promises).then((urls) => {
+                    console.log('Uploaded all blobs or files!',urls);
+                    urls.map(url => {
+                        url_if_rotable_part += url + ","
+                    })
+                })
+            }
+    
+            promises.length = 0
+
+            if(values.logbook_scan){
+                values.logbook_scan.map(file => {
+                    const storage = getStorage();
+                    const storageRef = ref(storage, 'logbook_scan/' + file.name);
+                    // 'file' comes from the Blob or File API
+                    promises.push(uploadBytes(storageRef, file.originFileObj).then((snapshot) => getDownloadURL(storageRef)))
+                })
+            }
+    
+            let url_logbook_scan = ""
+
+            if(promises.length){
+                await Promise.all(promises).then((urls) => {
+                    console.log('Uploaded all blobs or files!',urls);
+                    urls.map(url => {
+                        url_logbook_scan += url + ","
+                    })
+                })
+            }
+            values.url_if_rotable_part = url_if_rotable_part
+            values.url_logbook_scan = url_logbook_scan
+            values.if_rotable_part = null
+            values.logbook_scan =  null
+            console.log("save  -  values", values);
 
             const docRef = await addDoc(collection(firestore, "maintenance"), { ...values });
             form.resetFields()
@@ -75,6 +96,7 @@ const Maintenance = () => {
             console.error("Error adding document: ", error);
             message.error('Error saving')
         }
+        setLoading(false)
     }
 
     const normFile = (e) => {
@@ -318,7 +340,7 @@ const Maintenance = () => {
                         </Form.Item>
 
 
-                        <Button type="primary" block htmlType="submit">
+                        <Button type="primary" block htmlType="submit" loading={loading} disabled={loading}>
                             Submit
                         </Button>
                     </Form>
