@@ -4,20 +4,44 @@ import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button, m
 import security from 'assets/img/login/logo.jpeg';
 import moment from 'moment'
 import { getFirestore, doc, collection, setDoc, addDoc, db } from "firebase/firestore";
-import {firebaseApp} from "firebase";
+import { firebaseApp } from "firebase";
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const { Item } = Form;
 const { Option } = Select;
+const email = 'alexander.rivascorea17@gmail.com'
+const name = 'Hourly data'
 
 const Hours = () => {
   const firestore = getFirestore(firebaseApp);
+  const functions = getFunctions();
+
   const { user } = useContext(AppContext)
   console.log("Hours  -  user", user);
   const [form] = Form.useForm();
   const uid = LocalStorageHandler.user.uid
 
   const rules = [{ required: true, message: 'Field is required' }];
+
+  const sendEmail = httpsCallable(functions, 'sendEmail');
+
+  //function to build the email content with the data from the form
+  const buildEmail = (data) => {
+    const { name, email, number_of_hours, justification, station, time_of_entry, time_of_exit, day_off } = data;
+    const date = moment().format('DD/MM/YYYY');
+    const time = moment().format('HH:mm');
+    const content = `Data sent: ${date} - ${time}<br>
+    Name: ${name}<br>
+    Email: ${email}<br>
+    Number of hours: ${number_of_hours}<br>
+    Justification: ${justification}<br>
+    Station: ${station}<br>
+    Time of entry: ${time_of_entry}<br>
+    Time of exit: ${time_of_exit}<br>
+    Day off: ${day_off}<br>`;
+    return content;
+  }
 
   const save = async (fieldsValue) => {
     try {
@@ -34,6 +58,9 @@ const Hours = () => {
       // Add a new document with a generated id.
       const docRef = await addDoc(collection(firestore, "hours"), { ...values });
       form.resetFields()
+
+      const emailContent = buildEmail(values);
+      // const emailResult = await sendEmail({ data :  email,name, message: emailContent });
       message.success('Saved successfully')
       console.log("Document written with ID: ", docRef.id);
     } catch (error) {
@@ -55,7 +82,7 @@ const Hours = () => {
             <br />
             <br />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <img style={{objectFit : 'cover',objectPosition : '50% 50%',width : '100%',height : 'auto'}} src={security} />
+              <img style={{ objectFit: 'cover', objectPosition: '50% 50%', width: '100%', height: 'auto' }} src={security} />
             </div>
             <br />
             <br />

@@ -33,7 +33,7 @@ export const Layout = () => {
                 <Link to={`/users/${user_routes.maintenance}`}>Maintenance</Link>
               </>
             ),
-          },
+          }
         ]
       case 'admin':
         return [
@@ -53,10 +53,19 @@ export const Layout = () => {
               </>
             ),
           },
+          {
+            key: admin_routes.users,
+            label: (
+              <>
+                <Link to={`/admin/${admin_routes.users}`}>Add Users</Link>
+              </>
+            )
+                
+          }
         ]
     }
   }
- 
+
   return (
     <AntdLayout>
       <Header>

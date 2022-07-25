@@ -10,20 +10,26 @@ import { firebaseApp, storage } from "firebase";
 import { ref, uploadBytesResumable, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
-
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const { Item } = Form;
 const { Option } = Select;
 
+const email = 'alexander.rivascorea17@gmail.com'
+const name = 'Maintenance data'
+
 const Maintenance = () => {
     const firestore = getFirestore(firebaseApp);
     // const storage = firebase.storage();
+    const functions = getFunctions();
 
     const { user } = useContext(AppContext)
     const [form] = Form.useForm();
     const uid = LocalStorageHandler.user.uid
     const [loading, setLoading] = useState(false)
     const rules = [{ required: true, message: 'Field is required' }];
+
+    const sendEmail = httpsCallable(functions, 'sendEmail');
 
 
     const save = async (fieldsValue) => {
@@ -89,6 +95,11 @@ const Maintenance = () => {
             console.log("save  -  values", values);
 
             const docRef = await addDoc(collection(firestore, "maintenance"), { ...values });
+
+
+            const emailContent = buildEmail(values);
+            // const emailResult = await sendEmail({ data :  email,name, message: emailContent });
+
             form.resetFields()
             message.success('Saved successfully')
             console.log("Document written with ID: ", docRef.id);
@@ -97,6 +108,20 @@ const Maintenance = () => {
             message.error('Error saving')
         }
         setLoading(false)
+    }
+
+    const buildEmail = (data) => {
+        const { date, arrival, depature, time_delivered, if_rotable_part, logbook_scan, url_if_rotable_part, url_logbook_scan } = data
+        const content = `
+        <h1>Maintenance</h1>
+        <p>Date: ${date}</p>
+        <p>Arrival: ${arrival}</p>
+        <p>Depature: ${depature}</p>
+        <p>Time Delivered: ${time_delivered}</p>
+        <p>If Rotable Part: ${url_if_rotable_part}</p>
+        <p>Logbook Scan: ${url_logbook_scan}</p>
+        `
+        return content
     }
 
     const normFile = (e) => {

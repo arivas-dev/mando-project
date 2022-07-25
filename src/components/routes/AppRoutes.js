@@ -25,6 +25,8 @@ const HourResults = lazy(() => import('pages/HourResults/HourResults'))
 
 const MaintenanceResults = lazy(() => import('pages/MaintenanceResults/MaintenanceResults'))
 
+const Users = lazy(() => import('pages/Users/Users'))
+
 export const AppRoutes = () => {
     const { user_routes, login, notFound, admin_routes } = AppRoutesObj
 
@@ -90,6 +92,17 @@ export const AppRoutes = () => {
                     element={
                         <PrivateRoute>
                             <MaintenanceResults />
+                        </PrivateRoute>
+                    }
+                />
+            </Route>
+
+            <Route path={admin_routes.users}>
+                <Route
+                    index
+                    element={
+                        <PrivateRoute>
+                            <Users />
                         </PrivateRoute>
                     }
                 />
