@@ -1,36 +1,28 @@
-import React,{useState} from 'react'
-import { AppContext } from 'context/app'
-import { useContext } from 'react'
+import React, { useState } from 'react'
+
 import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button, message, Upload } from 'antd'
 import security from 'assets/img/login/logo.jpeg';
 import moment from 'moment'
-import { getFirestore, doc, collection, setDoc, addDoc, db } from "firebase/firestore";
+import { getFirestore, collection, addDoc, db } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { firebaseApp, storage } from "firebase";
-import { ref, uploadBytesResumable, uploadBytes, getDownloadURL } from "firebase/storage";
-import { LocalStorageHandler } from 'utils/LocalStorageHandler'
-import { InboxOutlined, UploadOutlined } from '@ant-design/icons';
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const { Item } = Form;
+import { firebaseApp } from "firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { InboxOutlined } from '@ant-design/icons'
+import { endpoints } from 'constants/api'
+import axios from 'axios';
+const SEND_EMAIL_URL = `${endpoints.email}/send-email`
 const { Option } = Select;
 
-const email = 'alexander.rivascorea17@gmail.com'
+const email = 'carlosayalamoran96@gmail.com'
 const name = 'Maintenance data'
 
 const Maintenance = () => {
     const firestore = getFirestore(firebaseApp);
     // const storage = firebase.storage();
-    const functions = getFunctions();
 
-    const { user } = useContext(AppContext)
     const [form] = Form.useForm();
-    const uid = LocalStorageHandler.user.uid
     const [loading, setLoading] = useState(false)
     const rules = [{ required: true, message: 'Field is required' }];
-
-    const sendEmail = httpsCallable(functions, 'sendEmail');
-
 
     const save = async (fieldsValue) => {
         setLoading(true)
@@ -48,7 +40,7 @@ const Maintenance = () => {
 
 
             let promises = []
-            if(values.if_rotable_part){
+            if (values.if_rotable_part) {
                 values.if_rotable_part.map(file => {
                     const storage = getStorage();
                     const storageRef = ref(storage, 'if_rotable_part/' + file.name);
@@ -56,20 +48,20 @@ const Maintenance = () => {
                     promises.push(uploadBytes(storageRef, file.originFileObj).then((snapshot) => getDownloadURL(storageRef)))
                 })
             }
-    
+
             let url_if_rotable_part = ""
-            if(promises.length){
+            if (promises.length) {
                 await Promise.all(promises).then((urls) => {
-                    console.log('Uploaded all blobs or files!',urls);
+                    console.log('Uploaded all blobs or files!', urls);
                     urls.map(url => {
                         url_if_rotable_part += url + ","
                     })
                 })
             }
-    
+
             promises.length = 0
 
-            if(values.logbook_scan){
+            if (values.logbook_scan) {
                 values.logbook_scan.map(file => {
                     const storage = getStorage();
                     const storageRef = ref(storage, 'logbook_scan/' + file.name);
@@ -77,12 +69,12 @@ const Maintenance = () => {
                     promises.push(uploadBytes(storageRef, file.originFileObj).then((snapshot) => getDownloadURL(storageRef)))
                 })
             }
-    
+
             let url_logbook_scan = ""
 
-            if(promises.length){
+            if (promises.length) {
                 await Promise.all(promises).then((urls) => {
-                    console.log('Uploaded all blobs or files!',urls);
+                    console.log('Uploaded all blobs or files!', urls);
                     urls.map(url => {
                         url_logbook_scan += url + ","
                     })
@@ -91,14 +83,14 @@ const Maintenance = () => {
             values.url_if_rotable_part = url_if_rotable_part
             values.url_logbook_scan = url_logbook_scan
             values.if_rotable_part = null
-            values.logbook_scan =  null
+            values.logbook_scan = null
             console.log("save  -  values", values);
 
             const docRef = await addDoc(collection(firestore, "maintenance"), { ...values });
 
 
             const emailContent = buildEmail(values);
-            // const emailResult = await sendEmail({ data :  email,name, message: emailContent });
+            sendEmail({ email, name, message: emailContent })
 
             form.resetFields()
             message.success('Saved successfully')
@@ -110,10 +102,27 @@ const Maintenance = () => {
         setLoading(false)
     }
 
+    const sendEmail = ({ email, name, message }) => {
+        try {
+            axios.post(SEND_EMAIL_URL, {
+                data: {
+                    email, name, message
+                }
+            })
+
+
+        } catch (error) {
+            message.error('Error sending email')
+        }
+    }
+
     const buildEmail = (data) => {
         const { date, arrival, depature, time_delivered, if_rotable_part, logbook_scan, url_if_rotable_part, url_logbook_scan } = data
+        const now = moment().format('DD/MM/YYYY');
+        const time = moment().format('HH:mm');
         const content = `
         <h1>Maintenance</h1>
+        Data sent: ${now} - ${time}<br>
         <p>Date: ${date}</p>
         <p>Arrival: ${arrival}</p>
         <p>Depature: ${depature}</p>

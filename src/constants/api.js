@@ -15,5 +15,6 @@ export const endpoints = {
   users: {
     retrieve: `${baseUrl}/user`,
     update: (userId) => `${baseUrl}/user/${userId}`,
-  }
+  },
+  email : 'https://mailermando.herokuapp.com'
 };
