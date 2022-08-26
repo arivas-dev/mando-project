@@ -10,7 +10,6 @@ import axios from 'axios';
 const SEND_EMAIL_URL = `${endpoints.email}/send-email`
 
 const { Option } = Select;
-const email = 'carlosayalamoran96@gmail.com'
 const name = 'Hourly data'
 
 const Hours = () => {
@@ -18,6 +17,7 @@ const Hours = () => {
 
   const { user } = useContext(AppContext)
   console.log("Hours  -  user", user);
+  const {email} = user
   const [form] = Form.useForm();
 
   const rules = [{ required: true, message: 'Field is required' }];

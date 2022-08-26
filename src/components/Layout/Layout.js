@@ -4,14 +4,17 @@ import { AppRoutes } from 'constants/app.routes'
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 import './Layout.css'
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { getAuth, onAuthStateChanged,signOut  } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 const { Header, Content } = AntdLayout
+
 
 export const Layout = () => {
   const { pathname } = useLocation()
   const activeRoute = pathname.split('/').pop()
   const { user_routes, admin_routes } = AppRoutes
   const user = LocalStorageHandler.user
-
+  let navigate = useNavigate();
 
   const getMenuOptions = () => {
     if (!user?.role) return []
@@ -60,10 +63,27 @@ export const Layout = () => {
                 <Link to={`/admin/${admin_routes.users}`}>Add Users</Link>
               </>
             )
-                
+
           }
         ]
     }
+  }
+
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      logout()
+    }
+  });
+  
+  const logout =()=>{
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      LocalStorageHandler.clearToken()
+      navigate("/login", { replace: true });
+    }).catch((error) => {
+      // An error happened.
+    });
   }
 
   return (
@@ -78,7 +98,7 @@ export const Layout = () => {
             }}
             size="large"
           >
-            <Link to="/login" onClick={() => LocalStorageHandler.clearToken()}>
+            <Link to="/login" onClick={logout}>
               Logout
             </Link>
           </Button>

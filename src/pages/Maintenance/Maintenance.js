@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 
 import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button, message, Upload } from 'antd'
 import security from 'assets/img/login/logo.jpeg';
@@ -10,10 +10,10 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { InboxOutlined } from '@ant-design/icons'
 import { endpoints } from 'constants/api'
 import axios from 'axios';
+import { AppContext } from 'context/app'
 const SEND_EMAIL_URL = `${endpoints.email}/send-email`
 const { Option } = Select;
 
-const email = 'carlosayalamoran96@gmail.com'
 const name = 'Maintenance data'
 
 const Maintenance = () => {
@@ -23,6 +23,8 @@ const Maintenance = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false)
     const rules = [{ required: true, message: 'Field is required' }];
+    const { user } = useContext(AppContext)
+    const {email} = user
 
     const save = async (fieldsValue) => {
         setLoading(true)

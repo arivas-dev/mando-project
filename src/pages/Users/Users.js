@@ -11,7 +11,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const { Item } = Form;
 const { Option } = Select;
-const email = 'alexander.rivascorea17@gmail.com'
 const name = 'Hourly survey data'
 
 
@@ -21,10 +20,8 @@ const Users = () => {
     const functions = getFunctions();
 
     const { user } = useContext(AppContext)
-    console.log("Hours  -  user", user);
+    const {email} = user
     const [form] = Form.useForm();
-    const uid = LocalStorageHandler.user.uid
-
     const rules = [{ required: true, message: 'Field is required' }];
 
     const sendEmail = httpsCallable(functions, 'sendEmail');
