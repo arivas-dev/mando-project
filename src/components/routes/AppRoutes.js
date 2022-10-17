@@ -28,7 +28,7 @@ const MaintenanceResults = lazy(() => import('pages/MaintenanceResults/Maintenan
 const Users = lazy(() => import('pages/Users/Users'))
 
 export const AppRoutes = () => {
-    const { user_routes, login, notFound, admin_routes } = AppRoutesObj
+    const { user_routes, login, notFound, admin_routes,admin_users_routes,admin_hours_routes,admin_maintenance_routes } = AppRoutesObj
 
     const renderUserRoutes = () => (
         <Route path={user_routes.base} element={<Layout />}>
@@ -110,12 +110,90 @@ export const AppRoutes = () => {
         </Route>
     )
 
+    const renderAdminUsersRoutes = () => (
+        <Route path={admin_users_routes.base} element={<Layout />}>
+            <Route
+                index
+                element={
+                    <PrivateRoute>
+                        <Navigate to={admin_users_routes.users} replace />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route path={admin_users_routes.users}>
+                <Route
+                    index
+                    element={
+                        <PrivateRoute>
+                            <Users />
+                        </PrivateRoute>
+                    }
+                />
+            </Route>
+        </Route>
+    )
+
+    const renderAdminHoursRoutes = () => (
+        <Route path={admin_hours_routes.base} element={<Layout />}>
+            <Route
+                index
+                element={
+                    <PrivateRoute>
+                        <Navigate to={admin_hours_routes.hours} replace />
+                    </PrivateRoute>
+                }
+            />
+
+            <Route path={admin_hours_routes.hours}>
+                <Route
+                    index
+                    element={
+                        <PrivateRoute>
+                            <HourResults />
+                        </PrivateRoute>
+                    }
+                />
+            </Route>
+
+
+        </Route>
+    )
+
+    const renderAdminMaintenanceRoutes = () => (
+        <Route path={admin_maintenance_routes.base} element={<Layout />}>
+            <Route
+                index
+                element={
+                    <PrivateRoute>
+                        <Navigate to={admin_maintenance_routes.maintenance} replace />
+                    </PrivateRoute>
+                }
+            />
+
+
+            <Route path={admin_maintenance_routes.maintenance}>
+                <Route
+                    index
+                    element={
+                        <PrivateRoute>
+                            <MaintenanceResults />
+                        </PrivateRoute>
+                    }
+                />
+            </Route>
+        </Route>
+    )
+
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Navigate to={login} replace />} />
                 {renderUserRoutes()}
                 {renderAdminRoutes()}
+                {renderAdminUsersRoutes()}
+                {renderAdminHoursRoutes()}
+                {renderAdminMaintenanceRoutes()}
                 <Route path={login} element={<LoginPage />} />
                 <Route path={notFound} element={<NotFoundPage />} />
             </Routes>

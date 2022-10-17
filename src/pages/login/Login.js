@@ -31,14 +31,25 @@ const Login = () => {
         }
     }
 
+    const getHome = role => {
+        switch (role) {
+            case 'admin':
+                return `/${AppRoutes.admin_routes.base}`
+            case 'admin_users':
+                return `/${AppRoutes.admin_users_routes.base}`
+            case 'admin_hours':
+                return `/${AppRoutes.admin_hours_routes.base}`
+            case 'user':
+                return `/${AppRoutes.user_routes.base}`
+            default:
+                return `/${AppRoutes.user_routes.base}`
+        }
+    }
+
     if (LocalStorageHandler.token) {
         return (
             <Navigate
-                to={
-                    user.data.role === 'user'
-                        ? `/${AppRoutes.user_routes.base}`
-                        : `/${AppRoutes.admin_routes.base}`
-                }
+                to={getHome(user.data.role)}
             />
         )
     }

@@ -4,7 +4,7 @@ import { AppRoutes } from 'constants/app.routes'
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 import './Layout.css'
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { getAuth, onAuthStateChanged,signOut  } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 const { Header, Content } = AntdLayout
 
@@ -66,6 +66,44 @@ export const Layout = () => {
 
           }
         ]
+
+      case 'admin_users':
+        return [
+          {
+            key: admin_routes.users,
+            label: (
+              <>
+                <Link to={`/admin_users/${admin_routes.users}`}>Add Users</Link>
+              </>
+            )
+
+          }
+        ]
+
+        case 'admin_hours':
+          return [
+            {
+              key: admin_routes.hours,
+              label: (
+                <>
+                  <Link to={`/admin_hours/${admin_routes.hours}`}>Hours</Link>
+                </>
+              ),
+            },
+          ]
+        case 'admin_maintenance':
+          return [
+            {
+              key: admin_routes.maintenance,
+              label: (
+                <>
+                  <Link to={`/admin_maintenance/${admin_routes.maintenance}`}>Maintenance</Link>
+                </>
+              ),
+            },
+          ]
+      default:
+        return []
     }
   }
 
@@ -75,8 +113,8 @@ export const Layout = () => {
       logout()
     }
   });
-  
-  const logout =()=>{
+
+  const logout = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
       LocalStorageHandler.clearToken()

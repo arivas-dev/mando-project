@@ -7,7 +7,9 @@ import { getFirestore, collection, addDoc, db } from "firebase/firestore";
 import { firebaseApp } from "firebase";
 import { endpoints } from 'constants/api'
 import axios from 'axios';
+import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 const SEND_EMAIL_URL = `${endpoints.email}/send-email`
+
 
 const { Option } = Select;
 const name = 'Hourly data'
@@ -15,8 +17,7 @@ const name = 'Hourly data'
 const Hours = () => {
   const firestore = getFirestore(firebaseApp);
 
-  const { user } = useContext(AppContext)
-  console.log("Hours  -  user", user);
+  const user  = LocalStorageHandler.user
   const {email} = user
   const [form] = Form.useForm();
 

@@ -11,6 +11,7 @@ import { InboxOutlined } from '@ant-design/icons'
 import { endpoints } from 'constants/api'
 import axios from 'axios';
 import { AppContext } from 'context/app'
+import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 const SEND_EMAIL_URL = `${endpoints.email}/send-email`
 const { Option } = Select;
 
@@ -23,7 +24,8 @@ const Maintenance = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false)
     const rules = [{ required: true, message: 'Field is required' }];
-    const { user } = useContext(AppContext)
+    const user  = LocalStorageHandler.user
+    console.log("Maintenance  -  user", user);
     const {email} = user
 
     const save = async (fieldsValue) => {
