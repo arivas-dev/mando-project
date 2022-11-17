@@ -49,7 +49,7 @@ const Login = () => {
     if (LocalStorageHandler.token) {
         return (
             <Navigate
-                to={getHome(user.data.role)}
+                to={getHome(user.data.role[0])}
             />
         )
     }

@@ -8,10 +8,20 @@ import TableToExcel from 'components/TableToExcel/index';
 const fields = ['id', 'ac_fleet', 'ac_registration', 'airline', 'arrival', 'costumber_responsible', 'costumer_work_order', 'date', 'depature', 'flight_number', 'job_description', 'service', 'station']
 
 const columns = fields.map(f => ({
-    title: f,
+    title: f.toUpperCase().replaceAll('_', ' '),
     dataIndex: f,
     key: f,
-}))
+})).map((el, index) => {
+    if (el.dataIndex === 'id') {
+        return {
+            ...el,
+            title : 'WORK ORDER',
+        }
+    }
+    return el
+})
+
+
 const MaintenanceResults = () => {
     const [data, setData] = useState([])
     const firestore = getFirestore(firebaseApp);
@@ -20,10 +30,22 @@ const MaintenanceResults = () => {
         getAll()
     }, [])
 
+    const padLeft = (number, targetLength) => String(number).padStart(targetLength, '0');
+
     const getAll = async () => {
         const docuCifrada = await getDocs(collection(firestore, `maintenance`));
-        const year = new Date().getFullYear()
-        const documentos = docuCifrada.docs.map((doc, index) => ({ ...doc.data(), id: `${year}-00${index + 1}` }));
+        
+        const documentos = docuCifrada.docs.map((doc, index) => ({ ...doc.data() })).sort((a, b) => a.added_at > b.added_at ? 1 : -1).map((doc,index) =>{
+            
+            //generate id by year of added_at
+            // const id = doc.added_at ? doc.added_at.split('-')[0]+'-00' + (index+1) : ''
+            const id = 'W' + padLeft(index+1,4)
+            return {
+                ...doc,
+                id
+            }
+        });
+        console.log("getAll  -  documentos", documentos);
         setData(documentos)
     }
 

@@ -1,16 +1,15 @@
-import React, { useState,useContext } from 'react'
+import React, { useState,useContext, useEffect } from 'react'
 
 import { Form, Input, Col, Row, DatePicker, Select, Radio, TimePicker, Button, message, Upload } from 'antd'
 import security from 'assets/img/login/logo.jpeg';
 import moment from 'moment'
-import { getFirestore, collection, addDoc, db } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { firebaseApp } from "firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { InboxOutlined } from '@ant-design/icons'
 import { endpoints } from 'constants/api'
 import axios from 'axios';
-import { AppContext } from 'context/app'
 import { LocalStorageHandler } from 'utils/LocalStorageHandler'
 const SEND_EMAIL_URL = `${endpoints.email}/send-email`
 const { Option } = Select;
@@ -28,6 +27,10 @@ const Maintenance = () => {
     console.log("Maintenance  -  user", user);
     const {email} = user
 
+    useEffect(() => {
+    }, []);
+
+
     const save = async (fieldsValue) => {
         setLoading(true)
         const values = {
@@ -36,6 +39,7 @@ const Maintenance = () => {
             'arrival': fieldsValue['arrival'].format('HH:mm:ss'),
             'depature': fieldsValue['depature'].format('HH:mm:ss'),
             'time_delivered': fieldsValue['time_delivered'].format('HH:mm:ss'),
+            'added_at': moment().format('YYYY-MM-DD HH:mm:ss'),
             // 'if_rotable_part': null,
             // 'logbook_scan': null,
         };

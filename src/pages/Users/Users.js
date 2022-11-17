@@ -20,7 +20,7 @@ const Users = () => {
     const functions = getFunctions();
 
     const { user } = useContext(AppContext)
-    const {email} = user
+    const { email } = user
     const [form] = Form.useForm();
     const rules = [{ required: true, message: 'Field is required' }];
 
@@ -43,7 +43,7 @@ const Users = () => {
         return content;
     }
 
-    const save = async ({ email, password, rol }) => {
+    const save = async ({ email, password, rol,name }) => {
         try {
 
             const infoUsuario = await createUserWithEmailAndPassword(auth, email, password).then(usuarioFirebase => {
@@ -53,7 +53,7 @@ const Users = () => {
 
             const docuRef = doc(firestore, `users/${infoUsuario.user.uid}`);
 
-            setDoc(docuRef, { email, role: rol })
+            setDoc(docuRef, { email, role: rol,name, added_at: moment().format('YYYY-MM-DD HH:mm:ss'), })
             form.resetFields()
             message.success('Saved successfully')
         } catch (error) {
@@ -99,6 +99,15 @@ const Users = () => {
                         <br />
 
                         <Form.Item
+                            label="Name"
+                            name="name"
+                            rules={rules}
+                        >
+                            <Input />
+                        </Form.Item>
+
+
+                        <Form.Item
                             label="Email"
                             name="email"
                             rules={rules}
@@ -127,6 +136,10 @@ const Users = () => {
                             >
                                 <Option value="admin">ADMIN</Option>
                                 <Option value="user">USER</Option>
+                                <Option value="admin_hours">ADMIN HOURS</Option>
+                                <Option value="admin_maintenance">ADMIN MAINTENANCE</Option>
+                                <Option value="admin_users">ADMIN USERS</Option>
+
                             </Select>
                         </Form.Item>
 

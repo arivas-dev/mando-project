@@ -6,12 +6,29 @@ import TableToExcel from 'components/TableToExcel/index';
 
 
 
-const fields = ['id', 'date', 'day_off', 'justification', 'name', 'number_of_hours', 'station', 'time_of_entry', 'time_of_exit']
+const fields = ['id', 'date', 'day_off', 'justification', 'name', 'number_of_hours', 'station', 'time_of_entry', 'time_of_exit','extra_hours','work_order']
 const columns = fields.map(f => ({
-    title: f,
+    title: f.toUpperCase().replaceAll('_', ' '),
     dataIndex: f,
     key: f,
-}))
+})).map(e => {
+    if (e.dataIndex === 'extra_hours') {
+        return {
+            ...e,
+            render: (text, record) => {
+                return (
+                    <div>
+                        {text === 1 ? 'SI' : 'NO'}
+                    </div>
+                )
+            }
+        }
+    }
+    return e
+})
+
+
+
 const HourResults = () => {
     const [data, setData] = useState([])
     const firestore = getFirestore(firebaseApp);
@@ -22,8 +39,15 @@ const HourResults = () => {
 
     const getAll = async () => {
         const docuCifrada = await getDocs(collection(firestore, `hours`));
-        const year = new Date().getFullYear()
-        const documentos = docuCifrada.docs.map((doc, index) => ({ ...doc.data(), id: `${year}-00${index + 1}` }));
+        const documentos = docuCifrada.docs.map((doc) => ({ ...doc.data()})).sort((a, b) => a.added_at > b.added_at ? 1 : -1).map((doc,index) =>{
+            
+            //generate id by year of added_at
+            const id = doc.added_at ? doc.added_at.split('-')[0]+'-00' + (index+1) : ''
+            return {
+                ...doc,
+                id
+            }
+        });;
         setData(documentos)
 
     }

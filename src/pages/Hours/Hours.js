@@ -17,9 +17,11 @@ const name = 'Hourly data'
 const Hours = () => {
   const firestore = getFirestore(firebaseApp);
 
-  const user  = LocalStorageHandler.user
-  const {email} = user
+  const user = LocalStorageHandler.user
+  const { email,name } = user
   const [form] = Form.useForm();
+  const horasExtraValue = Form.useWatch('extra_hours', form);
+  console.log("Hours  -  horasExtraValue", horasExtraValue);
 
   const rules = [{ required: true, message: 'Field is required' }];
 
@@ -48,6 +50,8 @@ const Hours = () => {
         'date': fieldsValue['date'].format('YYYY-MM-DD'),
         'time_of_entry': fieldsValue['time_of_entry'].format('HH:mm:ss'),
         'time_of_exit': fieldsValue['time_of_exit'].format('HH:mm:ss'),
+        'added_at': moment().format('YYYY-MM-DD HH:mm:ss'),
+        'work_order': horasExtraValue === 1 ? fieldsValue['work_order'] : '',
       };
       console.log('Received values of form: ', values);
       // const docuRef = doc(firestore, `hours/${uid}`);
@@ -70,8 +74,8 @@ const Hours = () => {
   const sendEmail = ({ email, name, message }) => {
     try {
       axios.post(SEND_EMAIL_URL, {
-        data : {
-          email,name,message
+        data: {
+          email, name, message
         }
       })
 
@@ -89,10 +93,10 @@ const Hours = () => {
 
         <Col xs={22} sm={20} md={12} lg={10} >
 
-          <Form form={form} onFinish={save}>
+          <Form form={form} onFinish={save} initialValues={{name}}>
             <br />
             <br />
-            <br />  
+            <br />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
               <img style={{ objectFit: 'cover', objectPosition: '50% 50%', width: '100%', height: 'auto' }} src={security} />
             </div>
@@ -121,6 +125,7 @@ const Hours = () => {
               label="Nombre"
               name="name"
               rules={rules}
+              hidden={true}
             >
               <Input />
             </Form.Item>
@@ -174,6 +179,27 @@ const Hours = () => {
                 <Radio value={10}>10</Radio>
               </Radio.Group>
             </Form.Item>
+
+            <Form.Item
+              label="¿Son horas extras?"
+              name="extra_hours"
+              rules={rules}
+            >
+              <Radio.Group  >
+                <Radio value={1} >SI</Radio>
+                <Radio value={2}>NO</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            {
+              horasExtraValue === 1 && (
+                <Form.Item label="Work Order" name="work_order" rules={rules}>
+                  <Input />
+                </Form.Item>
+              )
+            }
+
+
 
 
             <Button type="primary" block htmlType="submit">

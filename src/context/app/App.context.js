@@ -47,7 +47,8 @@ export const AppContextProvider = ({ children }) => {
 
   async function setUserWithFirebaseAndRol(usuarioFirebase) {
     const rol = await getRol(usuarioFirebase.uid)
-    return rol.role
+    console.log("setUserWithFirebaseAndRol  -  rol", rol);
+    return [rol.role, rol.name || '']
   }
 
   const login = useCallback(
@@ -63,7 +64,7 @@ export const AppContextProvider = ({ children }) => {
 
          
           LocalStorageHandler.token = accessToken
-          LocalStorageHandler.user = {...user,role}
+          LocalStorageHandler.user = {...user, role : role[0], name : role[1]}
           // console.log("{ type: 'UPDATE_USER_DATA', user :{data : {...user,role}} }", { type: 'UPDATE_USER_DATA', user :{data : {...user,role}} });
           dispatch({ type: 'UPDATE_USER_DATA', user :  {...user,role} })
           return user
